@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="gr__vektr_co"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vektr</title>
+  <style>
+    body {
+      width: 100%;
+      height: 100vh;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: white;
+    }
+
+    h2 {
+      color: white;
+      text-align: center;
+      font-family: sans-serif;
+      font-size: 3rem;
+    }
+
+    #form:focus-within {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, .3);
+  transform: translateY(-2px);
+}
+
+    #email:placeholder-shown + #submit:not(:focus) {
+  opacity: .5;
+  pointer-events: none;
+}
+
+  </style>
+<style></style></head>
+<body data-gr-c-s-loaded="true" style="">
+  
+<div id="logo">
+  <svg xmlns="http://www.w3.org/2000/svg" width="116" height="50">
+  <path fill-rule="evenodd" fill="white" d="M1 5.1h3.7l3 9.4 3.1-9.4h3.7L9.6 18H5.8L1 5.1zm38 1.7c1 1.2 1.6 2.8 1.6 5v.9h-9.3c.2.8.6 1.4 1.2 1.9.6.4 1.3.7 2.1.7a4.5 4.5 0 0 0 3.3-1.4l2 2a8 8 0 0 1-2.4 1.7 8 8 0 0 1-3.2.5c-1.3 0-2.5-.2-3.5-.8-1-.5-1.8-1.3-2.4-2.3a7 7 0 0 1-.8-3.4 7 7 0 0 1 .8-3.5c.6-1 1.4-1.8 2.4-2.3a7 7 0 0 1 3.4-.8c2.1 0 3.7.6 4.8 1.8zm-2 3.7a3 3 0 0 0-.8-2c-.5-.6-1.2-.8-2-.8s-1.5.2-2 .7c-.6.5-1 1.2-1 2H37zM60 18l3.1-5.3 1.7 1.8V18h3.7V.2h-3.7V10l-4.6-5H56l4.7 5-5 7.9h4.4zm31.8-.7a7 7 0 0 1-3.4.9 5 5 0 0 1-3-1c-.7-.8-1-1.7-1-3v-6h-1.9V5.7h1.8V2H88v3.6h3.5v2.5H88v5.4c0 1 .4 1.4 1.2 1.4.5 0 1.1-.1 1.8-.4l.8 2.7zm20.6-11.7c.8-.4 1.6-.6 2.6-.7v3.5a5 5 0 0 0-.6 0c-1.1 0-2 .3-2.7 1-.7.5-1 1.4-1 2.4V18H107V5h3.7v2.4c.4-.8 1-1.4 1.7-1.8z"></path>
+  </svg>
+</div>
+
+<div id="percentage">    
+</div>
+
+<div>
+    <form id="form" name="contact" netlify>
+   <input placeholder="Your email address" type="email" id="email" name="email" required>
+   <button type="submit" id="submit">Subscribe</button>
+  </form>
+ </div>
+  
+
+<script>
+
+// This const created to attach the unordered list "ul" is where we attach the list to in the html
+const wrapper = document.getElementById('percentage')
+
+
+// This is a helper function that makes it easy to create an HTML element with Javascript.
+// This could be done with React as well. But no need for that here it would be overkill.
+function createNode(element) {
+  return document.createElement(element)
+}
+
+// This is another helper function that ties the data that we are creating with the html to view.
+function append(parent, el) {
+  return parent.appendChild(el);
+}
+
+// We need to get the id of the spreadsheet and make the sheet public.
+// Make sure the settings are set to Anyone on the Internet.
+// If there is secure data you can create a new sheet and use a function to move the data.
+// Under File in google sheets make sure to "Publish to the Web" just the sheet that you want.
+// ID of the Google Spreadsheet
+// const sheetID = "10pV3JZvf8FWd66b_A9nf8x90e2wE3-Kob8TQS0gXkjo"; 
+const sheetID = "17SaXSxGP1NswM1qIGtfAcbKlbePVRhVtErNAHVwhgck";
+// This creates the url that we will be accesing.
+const url = "https://spreadsheets.google.com/feeds/list/" + sheetID +"/1/public/values?alt=json";
+// This will create a link in the console to view the data.
+console.log(url);
+
+// Here is where we retrieve the data from the sheet.
+// Fetch is the new way to retreve data in Javascript
+fetch(url)
+// First we turn all the data coming in from the url into JSON
+  .then(function(response) {
+    return response.json();
+  })
+
+  .then (function(data) {
+    // Then we go into the JSON and retrive the whole Google Sheet
+    let names = data.feed.entry;
+    // This puts the JSON in the console 
+    console.log(names);
+    
+    // Here we go and separate out the rows 
+    return names.map(function(name) {
+      // Then we create the list item "li"
+      let h2 = createNode('h2');
+      // Then we create a span that the words will go in
+  
+      // Sending the name and data field to the console
+      console.log(name.gsx$data);
+      // Putting the data inside of the span with innerHTML
+      h2.innerHTML = `${name.gsx$data.$t}`;
+      // Then put the span inside the list item "li"
+      // The last step is puting the list item "li" inside of the unordered list "ul"
+      append(wrapper, h2);
+    })
+  });
+
+  </script>
+
+
+ </body>
